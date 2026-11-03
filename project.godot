@@ -25,7 +25,7 @@ window/stretch/aspect="keep"
 
 [gui]
 
-theme/custom_font="res://theme/cjk_font.tres"
+theme/custom_font="res://assets/字型/NotoSansTC-Regular.otf"
 
 [importer_defaults]
 
