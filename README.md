@@ -2,6 +2,9 @@
 
 以 Godot 4.3 製作的遊戲 Demo。
 
+## 下載遊玩（Windows）
+到 [Releases](https://github.com/70oiram/allergen-demo/releases/latest) 下載 `AllergenDemo-v3-Windows.exe`，直接雙擊執行，不需安裝 Godot。
+
 ## 執行
 1. 安裝 [Godot 4.3](https://godotengine.org/download)。
 2. 以 Godot 開啟此資料夾中的 `project.godot`（首次開啟會自動匯入素材）。
