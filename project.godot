@@ -13,7 +13,6 @@ config/features=PackedStringArray("4.3", "GL Compatibility")
 [autoload]
 
 Assets="*res://scripts/assets.gd"
-Settings="*res://scripts/settings.gd"
 
 [display]
 

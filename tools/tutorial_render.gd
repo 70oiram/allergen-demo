@@ -16,7 +16,7 @@ var pages := [
 		"title": "①  把食物拉到面前",
 		"panels": ["up_drag", "down_eat"],
 		"captions": ["抬頭時，按住桌上的盤子往下拖", "盤子來到面前（低頭），拿起叉子就能進食"],
-		"tip": "也可以按 W／S、空白鍵或畫面右側的箭頭按鈕，切換抬頭／低頭",
+		"tip": "也可以按畫面右側的箭頭按鈕或空白鍵，切換抬頭／低頭",
 	},
 	{
 		"file": "教學-2-推開食物或空盤.png",
@@ -24,14 +24,6 @@ var pages := [
 		"panels": ["down_handle", "down_push"],
 		"captions": ["低頭時滑鼠靠近盤子左側，出現「我不想吃這個」（空盤時為「下一盤...」）", "按住左鍵往右拖，把盤子推離桌面"],
 		"tip": "眼前的盤子沒清掉之前，無法把新的盤子拉到面前",
-	},
-	{
-		"file": "教學-3-用WS切換視角.png",
-		"title": "③  用 W／S 切換視角",
-		"panels": ["up_key_w", "down_key_s"],
-		"captions": ["按 W：抬頭，看廚師做菜", "按 S：低頭，看眼前的盤子"],
-		"tip": "空白鍵或畫面右側的箭頭按鈕，也能切換抬頭／低頭",
-		"no_mid_arrow": true,
 	},
 ]
 
@@ -79,10 +71,9 @@ func _build_page(root: Node2D, page: Dictionary) -> void:
 		call("_scene_" + page.panels[i], sv)
 		root.add_child(_label(page.captions[i], 38, TEXT_COLOR, Vector2(p.x, 720), 1920 * PANEL_SCALE))
 	# 兩格之間的箭頭
-	if not page.get("no_mid_arrow", false):
-		var mid := Annot.new()
-		mid.arrows = [[Vector2(936, 447), Vector2(972, 447), 11.0]]
-		root.add_child(mid)
+	var mid := Annot.new()
+	mid.arrows = [[Vector2(936, 447), Vector2(972, 447), 11.0]]
+	root.add_child(mid)
 	root.add_child(_label(page.tip, 34, Color(TEXT_COLOR, 0.75), Vector2(0, 860), 1920))
 
 
@@ -203,38 +194,13 @@ func _scene_down_push(sv: SubViewport) -> void:
 	sv.add_child(a)
 
 
-func _scene_up_key_w(sv: SubViewport) -> void:
-	_up_base(sv)
-	var a := Annot.new()
-	a.keys = [[Vector2(1420, 330), "W"]]
-	a.arrows = [[Vector2(1420, 205), Vector2(1420, 60), 30.0]]
-	sv.add_child(a)
-
-
-func _scene_down_key_s(sv: SubViewport) -> void:
-	_down_base(sv)
-	var a := Annot.new()
-	a.keys = [[Vector2(960, 300), "S"]]
-	a.arrows = [[Vector2(960, 425), Vector2(960, 540), 30.0]]
-	sv.add_child(a)
-
-
 ## 標註：粗箭頭、滑鼠游標、提示圈
 class Annot extends Node2D:
 	var arrows := []    # [from, to, width]
 	var cursors := []   # 游標尖端位置
 	var rings := []     # [center, radius]
-	var keys := []      # [中心, 字]：鍵帽
 
 	func _draw() -> void:
-		for k in keys:
-			var r := Rect2(k[0] - Vector2(110, 110), Vector2(220, 220))
-			draw_rect(Rect2(r.position + Vector2(0, 16), r.size), Color(0, 0, 0, 0.55))
-			draw_rect(r, Color(0.97, 0.94, 0.88))
-			draw_rect(r, Color(0.3, 0.2, 0.1), false, 6.0)
-			var f := ThemeDB.fallback_font
-			var sz := f.get_string_size(k[1], HORIZONTAL_ALIGNMENT_LEFT, -1, 150)
-			draw_string(f, k[0] + Vector2(-sz.x * 0.5, 52), k[1], HORIZONTAL_ALIGNMENT_LEFT, -1, 150, Color(0.25, 0.15, 0.06))
 		for r in rings:
 			draw_arc(r[0], r[1], 0.0, TAU, 64, Color(0, 0, 0, 0.6), 16.0, true)
 			draw_arc(r[0], r[1], 0.0, TAU, 64, Color(1, 0.85, 0.4), 8.0, true)

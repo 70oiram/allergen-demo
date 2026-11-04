@@ -371,7 +371,6 @@ func _build_hud() -> void:
 	heartbeat.modulate.a = 0.0
 	hud.add_child(heartbeat)
 	heartbeat_sfx = AudioStreamPlayer.new()
-	heartbeat_sfx.bus = Settings.SFX
 	heartbeat_sfx.stream = preload("res://assets/音效/心跳-沉重穩定-單拍.wav")
 	heartbeat_sfx.volume_db = HEARTBEAT_VOLUME_DB
 	add_child(heartbeat_sfx)
@@ -385,10 +384,8 @@ func _build_hud() -> void:
 	eat_ring.visible = false
 	hud.add_child(eat_ring)
 	chew_sfx = AudioStreamPlayer.new()
-	chew_sfx.bus = Settings.SFX
 	add_child(chew_sfx)
 	cook_sfx = AudioStreamPlayer.new()
-	cook_sfx.bus = Settings.SFX
 	cook_sfx.volume_db = COOK_VOLUME_DB
 	add_child(cook_sfx)
 
@@ -613,7 +610,6 @@ func _enter_stage(n: int) -> void:
 func _play_bgm(path: String) -> void:
 	var old := bgm
 	bgm = AudioStreamPlayer.new()
-	bgm.bus = Settings.MUSIC
 	bgm.stream = load(path)
 	bgm.volume_db = BGM_VOLUME_DB if old == null else -40.0
 	add_child(bgm)
@@ -716,7 +712,6 @@ func _play_cook(path: String) -> void:
 ## 單次音效：各自獨立播放，可與其他音效重疊（如開冰箱與拿取食材）
 func _play_sfx(path: String) -> void:
 	var p := AudioStreamPlayer.new()
-	p.bus = Settings.SFX
 	p.stream = load(path)
 	p.volume_db = COOK_VOLUME_DB
 	add_child(p)
@@ -868,10 +863,6 @@ func _input(event: InputEvent) -> void:
 			_apply_eat(true)   # 測試用：T 鍵等於吃下一次過敏原
 		elif event.keycode == KEY_SPACE and not _locked():
 			_set_view(not looking_down)   # 空白鍵：切換抬頭／低頭（同右側按鈕）
-		elif event.keycode == KEY_W and not _locked():
-			_set_view(false)   # W：抬頭
-		elif event.keycode == KEY_S and not _locked():
-			_set_view(true)    # S：低頭
 	if _sim:
 		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
@@ -1380,16 +1371,6 @@ func _debug_run() -> void:
 	_input(sp2)
 	await _fast_until(func(): return not view_switching)
 	print("space -> looking_down=", looking_down)
-	# W／S：抬頭／低頭（重複按同一鍵不會來回切換）
-	var wk := InputEventKey.new()
-	wk.pressed = true
-	var ws_log := []
-	for k in [KEY_S, KEY_S, KEY_W, KEY_W]:
-		wk.keycode = k
-		_input(wk)
-		await _fast_until(func(): return not view_switching)
-		ws_log.append("%s->%s" % [OS.get_keycode_string(k), "down" if looking_down else "up"])
-	print("W/S keys: ", ws_log)
 	allergen_hits = 0   # 測試用：後段另行驗證過敏原次數
 	await _sleep(0.5)
 	_right_press(Vector2(300, 900))
